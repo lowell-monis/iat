@@ -5,7 +5,6 @@ define(['managerAPI'], function(Manager){
     API.setName('mgr');
     API.addSettings('skip', true);
 
-    // Randomly select which of two sets of race category labels to use.
     let raceSet = API.shuffle(['a','b'])[0];
     let blackLabels = [];
     let whiteLabels = [];
@@ -25,27 +24,7 @@ define(['managerAPI'], function(Manager){
         blackLabels: blackLabels,
         whiteLabels: whiteLabels,
         disabledLabels: 'People with Disabilities',
-        ableLabels: 'People without Disabilities',
-        posWords: API.shuffle([
-            'Love', 'Cheer', 'Friend', 'Pleasure',
-            'Adore', 'Cheerful', 'Friendship', 'Joyful',
-            'Smiling', 'Cherish', 'Excellent', 'Glad',
-            'Joyous', 'Spectacular', 'Appealing', 'Delight',
-            'Excitement', 'Laughing', 'Attractive', 'Delightful',
-            'Fabulous', 'Glorious', 'Pleasing', 'Beautiful',
-            'Fantastic', 'Happy', 'Lovely', 'Terrific',
-            'Celebrate', 'Enjoy', 'Magnificent', 'Triumph'
-        ]),
-        negWords: API.shuffle([
-            'Abuse', 'Grief', 'Poison', 'Sadness',
-            'Pain', 'Despise', 'Failure', 'Nasty',
-            'Angry', 'Detest', 'Horrible', 'Negative',
-            'Ugly', 'Dirty', 'Gross', 'Evil',
-            'Rotten', 'Annoy', 'Disaster', 'Horrific',
-            'Scorn', 'Awful', 'Disgust', 'Hate',
-            'Humiliate', 'Selfish', 'Tragic', 'Bothersome',
-            'Hatred', 'Hurtful', 'Sickening', 'Yucky'
-        ])
+        ableLabels: 'People without Disabilities'
     });
 
     API.addTasksSet({
@@ -109,7 +88,6 @@ define(['managerAPI'], function(Manager){
                 {
                     type: 'injectStyle',
                     css: [
-                        '* {color:red}',
                         '[piq-page] {background-color: #fff; border: 1px solid transparent; border-radius: 4px; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05); margin-bottom: 20px; border-color: #bce8f1;}',
                         '[piq-page] > ol {margin: 15px;}',
                         '[piq-page] > .btn-group {margin: 0px 15px 15px 15px;}',

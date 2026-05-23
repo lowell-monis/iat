@@ -21,14 +21,30 @@ define(['pipAPI', 'https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10
             stimulusCss: { color: '#31940F', 'font-size': '2.3em' }
         },
         category2: {
-            name: global.disabledLabels,
+            name: global.whiteLabels,
             title: {
-                media: { word: global.disabledLabels },
+                media: { word: global.whiteLabels },
                 css: { color: '#31940F', 'font-size': '1.8em' },
                 height: 4
             },
             stimulusMedia: [
-                // *** REPLACE these filenames with the actual names from the Physical Disability zip ***
+                { image: 'wm1_nc.jpg' },
+                { image: 'wm2_nc.jpg' },
+                { image: 'wm3_nc.jpg' },
+                { image: 'wf1_nc.jpg' },
+                { image: 'wf2_nc.jpg' },
+                { image: 'wf3_nc.jpg' }
+            ],
+            stimulusCss: { color: '#31940F', 'font-size': '2.3em' }
+        },
+        attribute1: {
+            name: global.disabledLabels,
+            title: {
+                media: { word: global.disabledLabels },
+                css: { color: '#0000FF', 'font-size': '1.8em' },
+                height: 4
+            },
+            stimulusMedia: [
                 { image: 'disabled1.jpg' },
                 { image: 'disabled2.jpg' },
                 { image: 'disabled3.jpg' },
@@ -36,43 +52,22 @@ define(['pipAPI', 'https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10
                 { image: 'disabled5.jpg' },
                 { image: 'disabled6.jpg' }
             ],
-            stimulusCss: { color: '#31940F', 'font-size': '2.3em' }
-        },
-        attribute1: {
-            name: 'Bad words',
-            title: {
-                media: { word: 'Bad words' },
-                css: { color: '#0000FF', 'font-size': '1.8em' },
-                height: 4
-            },
-            stimulusMedia: [
-                { word: global.negWords[0] },
-                { word: global.negWords[1] },
-                { word: global.negWords[2] },
-                { word: global.negWords[3] },
-                { word: global.negWords[4] },
-                { word: global.negWords[5] },
-                { word: global.negWords[6] },
-                { word: global.negWords[7] }
-            ],
             stimulusCss: { color: '#0000FF', 'font-size': '2.3em' }
         },
         attribute2: {
-            name: 'Good words',
+            name: global.ableLabels,
             title: {
-                media: { word: 'Good words' },
+                media: { word: global.ableLabels },
                 css: { color: '#0000FF', 'font-size': '1.8em' },
                 height: 4
             },
             stimulusMedia: [
-                { word: global.posWords[0] },
-                { word: global.posWords[1] },
-                { word: global.posWords[2] },
-                { word: global.posWords[3] },
-                { word: global.posWords[4] },
-                { word: global.posWords[5] },
-                { word: global.posWords[6] },
-                { word: global.posWords[7] }
+                { image: 'abled1.jpg' },
+                { image: 'abled2.jpg' },
+                { image: 'abled3.jpg' },
+                { image: 'abled4.jpg' },
+                { image: 'abled5.jpg' },
+                { image: 'abled6.jpg' }
             ],
             stimulusCss: { color: '#0000FF', 'font-size': '2.3em' }
         },
