@@ -45,12 +45,12 @@ define(['pipAPI', 'https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10
                 height: 4
             },
             stimulusMedia: [
-                { image: 'disabled1.jpg' },
-                { image: 'disabled2.jpg' },
-                { image: 'disabled3.jpg' },
-                { image: 'disabled4.jpg' },
-                { image: 'disabled5.jpg' },
-                { image: 'disabled6.jpg' }
+                { image: 'disabled1.png' },
+                { image: 'disabled2.png' },
+                { image: 'disabled3.png' },
+                { image: 'disabled4.png' },
+                { image: 'disabled5.png' },
+                { image: 'disabled6.png' }
             ],
             stimulusCss: { color: '#0000FF', 'font-size': '2.3em' }
         },
@@ -62,12 +62,12 @@ define(['pipAPI', 'https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10
                 height: 4
             },
             stimulusMedia: [
-                { image: 'abled1.jpg' },
-                { image: 'abled2.jpg' },
-                { image: 'abled3.jpg' },
-                { image: 'abled4.jpg' },
-                { image: 'abled5.jpg' },
-                { image: 'abled6.jpg' }
+                { image: 'abled1.png' },
+                { image: 'abled2.png' },
+                { image: 'abled3.png' },
+                { image: 'abled4.png' },
+                { image: 'abled5.png' },
+                { image: 'abled6.png' }
             ],
             stimulusCss: { color: '#0000FF', 'font-size': '2.3em' }
         },
