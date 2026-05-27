@@ -23,8 +23,8 @@ define(['managerAPI'], function(Manager){
         raceSet: raceSet,
         blackLabels: blackLabels,
         whiteLabels: whiteLabels,
-        disabledLabels: 'People with Disabilities',
-        ableLabels: 'People without Disabilities'
+        disabledLabels: 'Physically Disabled People',
+        ableLabels: 'Physically Abled People'
     });
 
     API.addTasksSet({

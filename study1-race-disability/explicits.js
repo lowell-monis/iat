@@ -8,7 +8,7 @@ define(['questAPI'], function(Quest){
         decline: true,
         declineText: isTouch ? 'Decline' : 'Decline to Answer',
         autoFocus: true,
-        progressBar: 'Page <%= pagesMeta.number %> out of 2'
+        progressBar: 'Page <%= pagesMeta.number %> out of 3'
     });
 
     API.addQuestionsSet('basicQ', {
@@ -32,7 +32,7 @@ define(['questAPI'], function(Quest){
         type: 'checkboxList'
     });
 
-    // Q1: Gender (selectOne with open-text fallback for "Another gender")
+    // Q1: Gender
     API.addQuestionsSet('gender_q', {
         inherit: 'basicSelect',
         name: 'gender',
@@ -45,7 +45,7 @@ define(['questAPI'], function(Quest){
         ]
     });
 
-    // Q2: Race (checkboxList — mark all that apply)
+    // Q2: Race (mark all that apply)
     API.addQuestionsSet('race_q', {
         inherit: 'basicCheckbox',
         name: 'race',
@@ -61,7 +61,7 @@ define(['questAPI'], function(Quest){
         ]
     });
 
-    // Q3: Party ID (7-point scale)
+    // Q3: Party ID (7-point scale, endpoints only)
     API.addQuestionsSet('party_q', {
         inherit: 'basicSelect',
         name: 'party_id',
@@ -70,7 +70,7 @@ define(['questAPI'], function(Quest){
             { text: '1 – Strong Democrat', value: 1 },
             { text: '2', value: 2 },
             { text: '3', value: 3 },
-            { text: '4 – Independent', value: 4 },
+            { text: '4', value: 4 },
             { text: '5', value: 5 },
             { text: '6', value: 6 },
             { text: '7 – Strong Republican', value: 7 }
@@ -81,7 +81,12 @@ define(['questAPI'], function(Quest){
         {
             inherit: 'basicPage',
             questions: [
-                { inherit: 'gender_q' },
+                { inherit: 'gender_q' }
+            ]
+        },
+        {
+            inherit: 'basicPage',
+            questions: [
                 { inherit: 'race_q' }
             ]
         },
