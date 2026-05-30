@@ -5,24 +5,11 @@ define(['managerAPI'], function(Manager){
     API.setName('mgr');
     API.addSettings('skip', true);
 
-    let raceSet = API.shuffle(['a','b'])[0];
-    let blackLabels = [];
-    let whiteLabels = [];
-
-    if (raceSet == 'a') {
-        blackLabels.push('African Americans');
-        whiteLabels.push('European Americans');
-    } else {
-        blackLabels.push('Black people');
-        whiteLabels.push('White people');
-    }
-
-    API.addGlobal({
+API.addGlobal({
         raceiat: {},
         baseURL: './images/',
-        raceSet: raceSet,
-        blackLabels: blackLabels,
-        whiteLabels: whiteLabels,
+        blackLabels: 'Black people',
+        whiteLabels: 'White people',
         disabledLabels: 'Physically Disabled People',
         ableLabels: 'Physically Abled People'
     });
