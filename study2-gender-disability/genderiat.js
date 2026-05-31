@@ -18,7 +18,7 @@ define(['pipAPI', 'https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10
                 { image: 'woman5.jpg' },
                 { image: 'woman6.jpg' }
             ],
-            stimulusCss: { color: '#31940F', 'font-size': '2.3em', 'margin-top': '-30px' }
+            stimulusCss: { color: '#31940F', 'font-size': '2.3em', 'width': '200px' }
         },
         category2: {
             name: global.menLabels,
@@ -36,7 +36,7 @@ define(['pipAPI', 'https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10
                 { image: 'man5.jpg' },
                 { image: 'man6.jpg' }
             ],
-            stimulusCss: { color: '#31940F', 'font-size': '2.3em', 'margin-top': '-30px' }
+            stimulusCss: { color: '#31940F', 'font-size': '2.3em', 'width': '200px' }
         },
         attribute1: {
             name: global.disabledLabels,
