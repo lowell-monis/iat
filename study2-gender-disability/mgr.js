@@ -24,7 +24,7 @@ define(['managerAPI'], function(Manager){
             inherit: 'instructions',
             name: 'intro',
             templateUrl: 'intro.jst',
-            title: 'Intro',
+            title: 'Introduction',
             header: 'Welcome'
         }],
 
@@ -32,7 +32,7 @@ define(['managerAPI'], function(Manager){
             inherit: 'instructions',
             name: 'genderiat_instructions',
             templateUrl: 'genderiat_instructions.jst',
-            title: 'IAT Instructions',
+            title: 'IAT | Connections between identities',
             header: 'Implicit Association Test'
         }],
 

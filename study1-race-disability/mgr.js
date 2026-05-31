@@ -24,7 +24,7 @@ API.addGlobal({
             inherit: 'instructions',
             name: 'intro',
             templateUrl: 'intro.jst',
-            title: 'Intro',
+            title: 'Introduction',
             header: 'Welcome'
         }],
 
@@ -32,7 +32,7 @@ API.addGlobal({
             inherit: 'instructions',
             name: 'raceiat_instructions',
             templateUrl: 'raceiat_instructions.jst',
-            title: 'IAT Instructions',
+            title: 'IAT | Connections between identities',
             header: 'Implicit Association Test'
         }],
 
