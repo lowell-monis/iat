@@ -40,12 +40,12 @@ define(['questAPI'], function(Quest){
         ]
     });
 
-    // Q2: Race — defined completely standalone, no inheritance
+    // Q2: Race (mark all that apply) — selectMulti is the correct MinnoJS type
     API.addQuestionsSet('race_q', {
-        type: 'checkboxList',
+        type: 'selectMulti',
         name: 'race',
         required: false,
-        decline: false,
+        decline: true,
         numericValues: true,
         stem: 'What is your race? (Mark all that apply)',
         answers: [
