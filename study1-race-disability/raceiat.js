@@ -18,7 +18,7 @@ define(['pipAPI', 'https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10
                 { image: 'bf2_nc.jpg' },
                 { image: 'bf3_nc.jpg' }
             ],
-            stimulusCss: { color: '#31940F', 'font-size': '2.3em', 'width': '200px' }
+            stimulusCss: { color: '#31940F', 'font-size': '2.3em', 'width': '250px' }
         },
         category2: {
             name: global.whiteLabels,
@@ -35,7 +35,7 @@ define(['pipAPI', 'https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10
                 { image: 'wf2_nc.jpg' },
                 { image: 'wf3_nc.jpg' }
             ],
-            stimulusCss: { color: '#31940F', 'font-size': '2.3em', 'width': '200px' }
+            stimulusCss: { color: '#31940F', 'font-size': '2.3em', 'width': '250px' }
         },
         attribute1: {
             name: global.disabledLabels,

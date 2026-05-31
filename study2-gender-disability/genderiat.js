@@ -18,7 +18,7 @@ define(['pipAPI', 'https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10
                 { image: 'woman5.jpg' },
                 { image: 'woman6.jpg' }
             ],
-            stimulusCss: { color: '#31940F', 'font-size': '2.3em', 'width': '200px' }
+            stimulusCss: { color: '#31940F', 'font-size': '2.3em' }
         },
         category2: {
             name: global.menLabels,
@@ -28,7 +28,6 @@ define(['pipAPI', 'https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10
                 height: 4
             },
             stimulusMedia: [
-                // *** Replace with Dr. Bracic's actual men photo filenames ***
                 { image: 'man1.jpg' },
                 { image: 'man2.jpg' },
                 { image: 'man3.jpg' },
@@ -36,7 +35,7 @@ define(['pipAPI', 'https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10
                 { image: 'man5.jpg' },
                 { image: 'man6.jpg' }
             ],
-            stimulusCss: { color: '#31940F', 'font-size': '2.3em', 'width': '200px' }
+            stimulusCss: { color: '#31940F', 'font-size': '2.3em' }
         },
         attribute1: {
             name: global.disabledLabels,
