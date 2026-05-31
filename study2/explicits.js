@@ -27,11 +27,7 @@ define(['questAPI'], function(Quest){
         type: 'selectOne'
     });
 
-    API.addQuestionsSet('basicCheckbox', {
-        inherit: 'basicQ',
-        type: 'checkboxList'
-    });
-
+    // Q1: Gender
     API.addQuestionsSet('gender_q', {
         inherit: 'basicSelect',
         name: 'gender',
@@ -44,11 +40,13 @@ define(['questAPI'], function(Quest){
         ]
     });
 
+    // Q2: Race — defined completely standalone, no inheritance
     API.addQuestionsSet('race_q', {
-        decline: true,
-        required: false,
         type: 'checkboxList',
         name: 'race',
+        required: false,
+        decline: false,
+        numericValues: true,
         stem: 'What is your race? (Mark all that apply)',
         answers: [
             { text: 'American Indian/Native American', value: 1 },
@@ -61,6 +59,7 @@ define(['questAPI'], function(Quest){
         ]
     });
 
+    // Q3: Party ID
     API.addQuestionsSet('party_q', {
         inherit: 'basicSelect',
         name: 'party_id',
