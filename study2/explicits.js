@@ -32,7 +32,6 @@ define(['questAPI'], function(Quest){
         type: 'checkboxList'
     });
 
-    // Q1: Gender
     API.addQuestionsSet('gender_q', {
         inherit: 'basicSelect',
         name: 'gender',
@@ -45,9 +44,10 @@ define(['questAPI'], function(Quest){
         ]
     });
 
-    // Q2: Race (mark all that apply)
     API.addQuestionsSet('race_q', {
-        inherit: 'basicCheckbox',
+        decline: true,
+        required: false,
+        type: 'checkboxList',
         name: 'race',
         stem: 'What is your race? (Mark all that apply)',
         answers: [
@@ -61,7 +61,6 @@ define(['questAPI'], function(Quest){
         ]
     });
 
-    // Q3: Party ID (7-point scale, endpoints only)
     API.addQuestionsSet('party_q', {
         inherit: 'basicSelect',
         name: 'party_id',
