@@ -62,7 +62,13 @@ API.addGlobal({
             templateUrl: 'lastpage.jst',
             title: 'End',
             header: 'You have completed the study'
-        }]
+        }],
+
+        redirect: [{
+            type: 'redirect',
+            name: 'redirect',
+            url: 'https://polisci.msu.edu/'
+        }],
     });
 
     API.addSequence([
@@ -103,7 +109,8 @@ API.addGlobal({
         { inherit: 'raceiat' },
         { inherit: 'explicits' },
         { inherit: 'debriefing' },
-        { inherit: 'lastpage' }
+        { inherit: 'lastpage' },
+        { inherit: 'redirect' }
     ]);
 
     return API.script;
