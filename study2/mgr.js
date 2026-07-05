@@ -1,4 +1,4 @@
-define(['managerAPI'], function(Manager){
+define(['managerAPI', 'https://cdn.jsdelivr.net/gh/Joukehoekstra/datapipe-minno-mesh/datapipe.min.js'], function(Manager){
 
     var API = new Manager();
 
@@ -11,7 +11,8 @@ define(['managerAPI'], function(Manager){
         womenLabels: 'Women',
         menLabels: 'Men',
         disabledLabels: 'Physically Disabled People',
-        ableLabels: 'Physically Abled People'
+        ableLabels: 'Physically Abled People',
+        dataPipeExperimentID: 'KQ2pq6uCiqYL',
     });
 
     API.addTasksSet({
@@ -46,6 +47,39 @@ define(['managerAPI'], function(Manager){
             type: 'quest',
             name: 'explicits',
             scriptUrl: 'explicits.js'
+        }],
+
+        uploading: [{
+            type: 'message',
+            name: 'uploading',
+            header: 'Just a moment',
+            html: '<p>Please wait, sending data...</p>',
+            buttonText: '',
+            onLoad: function(API) {
+                let global = API.getGlobal();
+                let sessionId = global.$sessionId || ('sess_' + Date.now());
+                let dataAsString = JSON.stringify(API.getData());
+
+                fetch('https://pipe.jspsych.org/api/data/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: '*/*'
+                    },
+                    body: JSON.stringify({
+                        experimentID: global.dataPipeExperimentID,
+                        filename: sessionId + '.csv',
+                        data: dataAsString
+                    })
+                })
+                .then(function() {
+                    API.next();
+                })
+                .catch(function(error) {
+                    console.error('DataPipe upload failed:', error);
+                    API.next();
+                });
+            }
         }],
 
         debriefing: [{
@@ -108,6 +142,7 @@ define(['managerAPI'], function(Manager){
         { inherit: 'genderiat_instructions' },
         { inherit: 'genderiat' },
         { inherit: 'explicits' },
+        { inherit: 'uploading' },
         { inherit: 'debriefing' },
         { inherit: 'lastpage' },
         { inherit: 'redirect' }

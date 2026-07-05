@@ -1,5 +1,5 @@
-define(['managerAPI'], function(Manager){
-
+define(['managerAPI', 'https://cdn.jsdelivr.net/gh/Joukehoekstra/datapipe-minno-mesh/datapipe.min.js'], function(Manager){
+    
     var API = new Manager();
 
     API.setName('mgr');

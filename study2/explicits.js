@@ -75,14 +75,11 @@ define(['questAPI'], function(Quest){
         ]
     });
 
-    // Device type — hidden question, auto-recorded from MinnoJS touch detection
+    // Device type — invisible question, auto-recorded from MinnoJS touch detection
     API.addQuestionsSet('device_q', {
-        type: 'text',
+        type: 'hidden',
         name: 'device_type',
-        stem: 'Device type (auto-recorded)',
-        required: false,
-        decline: false,
-        defaultValue: isTouch ? 'touch' : 'computer'
+        response: isTouch ? 'touch' : 'computer'
     });
 
     API.addSequence([
