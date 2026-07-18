@@ -1,11 +1,29 @@
-define(['managerAPI', 'https://cdn.jsdelivr.net/gh/Joukehoekstra/datapipe-minno-mesh/datapipe.min.js'], function(Manager){
-    
+define(['managerAPI'], function(Manager){
+
     var API = new Manager();
 
     API.setName('mgr');
     API.addSettings('skip', true);
 
-API.addGlobal({
+    API.addSettings('logger', {
+        logger: [{
+            type: 'post',
+            url: 'https://pipe.jspsych.org/api/data/',
+            serialize: function(name, settings, global, current) {
+                return JSON.stringify({
+                    experimentID: '12MlCB7eHnjP',
+                    filename: global.$sessionId + '_' + name + '.csv',
+                    data: settings.data
+                });
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*'
+            }
+        }]
+    });
+
+    API.addGlobal({
         raceiat: {},
         baseURL: './images/',
         blackLabels: 'Black people',
@@ -24,7 +42,7 @@ API.addGlobal({
             inherit: 'instructions',
             name: 'intro',
             templateUrl: 'intro.jst',
-            title: 'Introduction',
+            title: 'Intro',
             header: 'Welcome'
         }],
 
@@ -32,7 +50,7 @@ API.addGlobal({
             inherit: 'instructions',
             name: 'raceiat_instructions',
             templateUrl: 'raceiat_instructions.jst',
-            title: 'IAT | Connections between identities',
+            title: 'IAT Instructions',
             header: 'Implicit Association Test'
         }],
 
@@ -68,7 +86,7 @@ API.addGlobal({
             type: 'redirect',
             name: 'redirect',
             url: 'https://polisci.msu.edu/'
-        }],
+        }]
     });
 
     API.addSequence([

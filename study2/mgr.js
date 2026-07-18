@@ -1,9 +1,27 @@
-define(['managerAPI', 'https://cdn.jsdelivr.net/gh/Joukehoekstra/datapipe-minno-mesh/datapipe.min.js'], function(Manager){
+define(['managerAPI'], function(Manager){
 
     var API = new Manager();
 
     API.setName('mgr');
     API.addSettings('skip', true);
+
+    API.addSettings('logger', {
+        logger: [{
+            type: 'post',
+            url: 'https://pipe.jspsych.org/api/data/',
+            serialize: function(name, settings, global, current) {
+                return JSON.stringify({
+                    experimentID: 'KQ2pq6uCiqYL',
+                    filename: global.$sessionId + '_' + name + '.csv',
+                    data: settings.data
+                });
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*'
+            }
+        }]
+    });
 
     API.addGlobal({
         genderiat: {},
@@ -11,8 +29,7 @@ define(['managerAPI', 'https://cdn.jsdelivr.net/gh/Joukehoekstra/datapipe-minno-
         womenLabels: 'Women',
         menLabels: 'Men',
         disabledLabels: 'Physically Disabled People',
-        ableLabels: 'Physically Abled People',
-        dataPipeExperimentID: 'KQ2pq6uCiqYL',
+        ableLabels: 'Physically Abled People'
     });
 
     API.addTasksSet({
@@ -25,7 +42,7 @@ define(['managerAPI', 'https://cdn.jsdelivr.net/gh/Joukehoekstra/datapipe-minno-
             inherit: 'instructions',
             name: 'intro',
             templateUrl: 'intro.jst',
-            title: 'Introduction',
+            title: 'Intro',
             header: 'Welcome'
         }],
 
@@ -33,7 +50,7 @@ define(['managerAPI', 'https://cdn.jsdelivr.net/gh/Joukehoekstra/datapipe-minno-
             inherit: 'instructions',
             name: 'genderiat_instructions',
             templateUrl: 'genderiat_instructions.jst',
-            title: 'IAT | Connections between identities',
+            title: 'IAT Instructions',
             header: 'Implicit Association Test'
         }],
 
@@ -47,39 +64,6 @@ define(['managerAPI', 'https://cdn.jsdelivr.net/gh/Joukehoekstra/datapipe-minno-
             type: 'quest',
             name: 'explicits',
             scriptUrl: 'explicits.js'
-        }],
-
-        uploading: [{
-            type: 'message',
-            name: 'uploading',
-            header: 'Just a moment',
-            html: '<p>Please wait, sending data...</p>',
-            buttonText: '',
-            onLoad: function(API) {
-                let global = API.getGlobal();
-                let sessionId = global.$sessionId || ('sess_' + Date.now());
-                let dataAsString = JSON.stringify(API.getData());
-
-                fetch('https://pipe.jspsych.org/api/data/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: '*/*'
-                    },
-                    body: JSON.stringify({
-                        experimentID: global.dataPipeExperimentID,
-                        filename: sessionId + '.csv',
-                        data: dataAsString
-                    })
-                })
-                .then(function() {
-                    API.next();
-                })
-                .catch(function(error) {
-                    console.error('DataPipe upload failed:', error);
-                    API.next();
-                });
-            }
         }],
 
         debriefing: [{
@@ -102,7 +86,7 @@ define(['managerAPI', 'https://cdn.jsdelivr.net/gh/Joukehoekstra/datapipe-minno-
             type: 'redirect',
             name: 'redirect',
             url: 'https://polisci.msu.edu/'
-        }],
+        }]
     });
 
     API.addSequence([
@@ -142,7 +126,6 @@ define(['managerAPI', 'https://cdn.jsdelivr.net/gh/Joukehoekstra/datapipe-minno-
         { inherit: 'genderiat_instructions' },
         { inherit: 'genderiat' },
         { inherit: 'explicits' },
-        { inherit: 'uploading' },
         { inherit: 'debriefing' },
         { inherit: 'lastpage' },
         { inherit: 'redirect' }
