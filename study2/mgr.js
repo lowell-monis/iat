@@ -5,24 +5,6 @@ define(['managerAPI'], function(Manager){
     API.setName('mgr');
     API.addSettings('skip', true);
 
-    API.addSettings('logger', {
-        logger: [{
-            type: 'post',
-            url: 'https://pipe.jspsych.org/api/data/',
-            serialize: function(name, settings, global, current) {
-                return JSON.stringify({
-                    experimentID: 'KQ2pq6uCiqYL',
-                    filename: global.$sessionId + '_' + name + '.csv',
-                    data: settings.data
-                });
-            },
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*'
-            }
-        }]
-    });
-
     API.addGlobal({
         genderiat: {},
         baseURL: './images/',
