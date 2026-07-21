@@ -80,12 +80,6 @@ define(['managerAPI'], function(Manager){
             templateUrl: 'lastpage.jst',
             title: 'End',
             header: 'You have completed the study'
-        }],
-
-        redirect: [{
-            type: 'redirect',
-            name: 'redirect',
-            url: 'https://polisci.msu.edu/'
         }]
     });
 
@@ -127,8 +121,7 @@ define(['managerAPI'], function(Manager){
         { inherit: 'genderiat' },
         { inherit: 'explicits' },
         { inherit: 'debriefing' },
-        { inherit: 'lastpage' },
-        { inherit: 'redirect' }
+        { inherit: 'lastpage' }
     ]);
 
     return API.script;

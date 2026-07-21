@@ -1,44 +1,56 @@
 <html>
     <head>
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/main.css" />
-		<style type="text/css">
-        .container {padding-top: 15px;}
-         img {
-            -webkit-user-drag: none;
-            user-drag: none;
-            pointer-events: none;
-        }
-		</style>
-	
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/main.css" />
+        <style type="text/css">
+            .container {padding-top: 15px;}
+            img {
+                -webkit-user-drag: none;
+                user-drag: none;
+                pointer-events: none;
+            }
+        </style>
+
         <script>
-            // load MinnoJS from the CDN
-            var scriptTag                = document.createElement('script');
-            scriptTag.src                = 'https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/pi-minno.js';
-            scriptTag.onload             = onLoad;
+            var scriptTag = document.createElement('script');
+            scriptTag.src = 'https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/pi-minno.js';
+            scriptTag.onload = onLoad;
             scriptTag.onreadystatechange = onLoad;
             document.head.appendChild(scriptTag);
-        
-            // This function gets activated only after MinnoJS is loaded
+
             function onLoad() {
-				// Create a div with class 'container' and id 'minno-app'
-				var container = document.createElement('div');
-				container.className = 'container';
+                var container = document.createElement('div');
+                container.className = 'container';
 
-				// Create the canvas object
-				var canvas = document.createElement('div');
+                var canvas = document.createElement('div');
+                container.appendChild(canvas);
+                document.body.appendChild(container);
 
-				// Append the canvas object to the container
-				container.appendChild(canvas);
-			
-
-				// Append the container to the body
-				document.body.appendChild(container);
-                
-                // Run your study (just set the correct URL)
                 minnoJS(canvas, 'mgr.js');
-                
-                // We need to wait a few miliseconds for Qualtrics to register the value that we entered
-                minnoJS.onEnd = function () { setTimeout(proceed, 100); }
+
+                minnoJS.onEnd = function(data) {
+                    var dataAsString = JSON.stringify(data);
+                    var sessionId = 'sess_' + Date.now();
+
+                    fetch('https://pipe.jspsych.org/api/data/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': '*/*'
+                        },
+                        body: JSON.stringify({
+                            experimentID: 'KQ2pq6uCiqYL',
+                            filename: sessionId + '.csv',
+                            data: dataAsString
+                        })
+                    })
+                    .then(function() {
+                        window.location.href = 'https://polisci.msu.edu/';
+                    })
+                    .catch(function(error) {
+                        console.error('DataPipe upload failed:', error);
+                        window.location.href = 'https://polisci.msu.edu/';
+                    });
+                };
             }
         </script>
     </head>
