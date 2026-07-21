@@ -1,59 +1,102 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/main.css" />
-        <style type="text/css">
-            .container {padding-top: 15px;}
-            img {
-                -webkit-user-drag: none;
-                user-drag: none;
-                pointer-events: none;
-            }
-        </style>
+<head>
 
-        <script>
-            var scriptTag = document.createElement('script');
-            scriptTag.src = 'https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/pi-minno.js';
-            scriptTag.onload = onLoad;
-            scriptTag.onreadystatechange = onLoad;
-            document.head.appendChild(scriptTag);
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/main.css"/>
 
-            function onLoad() {
-                var container = document.createElement('div');
-                container.className = 'container';
+    <style>
+        .container{
+            padding-top:15px;
+        }
 
-                var canvas = document.createElement('div');
-                container.appendChild(canvas);
-                document.body.appendChild(container);
+        img{
+            -webkit-user-drag:none;
+            user-drag:none;
+            pointer-events:none;
+        }
+    </style>
 
-                minnoJS(canvas, 'mgr.js');
+    <script>
 
-                minnoJS.onEnd = function(data) {
-                    var dataAsString = JSON.stringify(data);
-                    var sessionId = 'sess_' + Date.now();
+        var scriptTag = document.createElement("script");
+        scriptTag.src = "https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/pi-minno.js";
+        scriptTag.onload = onLoad;
+        scriptTag.onreadystatechange = onLoad;
+        document.head.appendChild(scriptTag);
 
-                    fetch('https://pipe.jspsych.org/api/data/', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': '*/*'
-                        },
-                        body: JSON.stringify({
-                            experimentID: 'KQ2pq6uCiqYL',
-                            filename: sessionId + '.csv',
-                            data: dataAsString
-                        })
-                    })
-                    .then(function() {
-                        window.location.href = 'https://polisci.msu.edu/';
-                    })
-                    .catch(function(error) {
-                        console.error('DataPipe upload failed:', error);
-                        window.location.href = 'https://polisci.msu.edu/';
-                    });
-                };
-            }
-        </script>
-    </head>
-    <body>
-    </body>
+        function onLoad(){
+
+            var container = document.createElement("div");
+            container.className = "container";
+
+            var canvas = document.createElement("div");
+            container.appendChild(canvas);
+
+            document.body.appendChild(container);
+
+            minnoJS(canvas,"mgr.js");
+
+            minnoJS.onEnd = async function(data){
+
+                try{
+
+                    console.log("Experiment data:", data);
+
+                    const sessionId =
+                        "study2_" +
+                        Date.now() +
+                        "_" +
+                        Math.random().toString(36).substring(2,8);
+
+                    const dataAsString =
+                        (typeof data === "string")
+                            ? data
+                            : JSON.stringify(data);
+
+                    const response = await fetch(
+                        "https://pipe.jspsych.org/api/data/",
+                        {
+                            method:"POST",
+                            headers:{
+                                "Content-Type":"application/json",
+                                "Accept":"*/*"
+                            },
+                            body:JSON.stringify({
+                                experimentID:"KQ2pq6uCiqYL",
+                                filename:sessionId + ".csv",
+                                data:dataAsString
+                            })
+                        }
+                    );
+
+                    if(!response.ok){
+                        throw new Error(await response.text());
+                    }
+
+                    console.log("Data successfully uploaded.");
+
+                    window.location.replace("https://polisci.msu.edu/");
+
+                }
+                catch(error){
+
+                    console.error(error);
+
+                    alert(
+                        "There was a problem saving your responses. Please contact the researcher."
+                    );
+
+                }
+
+            };
+
+        }
+
+    </script>
+
+</head>
+
+<body>
+
+</body>
 </html>
