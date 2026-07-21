@@ -5,10 +5,53 @@ define(['managerAPI'], function(Manager){
     API.setName('mgr');
     API.addSettings('skip', true);
 
-    // Keep internal logging enabled so task data is recorded in memory
+    // Keep internal CSV logging enabled so data accumulates in memory
     API.addSettings('logger', {
         type: 'csv',
         url: '' 
+    });
+
+    // Native MinnoJS hook: Fires automatically when the sequence ends
+    API.addSettings('onEnd', function() {
+        var sessionId = "study2_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
+
+        // Retrieve recorded trial logs from MinnoJS global store
+        var dataAsString = "";
+        try {
+            if (API.getLogs) {
+                dataAsString = API.getLogs();
+            } else if (window.minnoJS && window.minnoJS.logger) {
+                dataAsString = window.minnoJS.logger();
+            }
+        } catch (e) {
+            console.error("Error retrieving logs:", e);
+        }
+
+        // Send payload to DataPipe
+        fetch("https://pipe.jspsych.org/api/data/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "*/*"
+            },
+            body: JSON.stringify({
+                experimentID: "KQ2pq6uCiqYL",
+                filename: sessionId + ".csv",
+                data: dataAsString || "no_data_logged"
+            })
+        })
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error("DataPipe response error");
+            }
+            console.log("DataPipe upload successful.");
+            window.location.replace("https://polisci.msu.edu/");
+        })
+        .catch(function(err) {
+            console.error("DataPipe Upload Failed:", err);
+            // Redirect anyway so the participant isn't stuck on a blank screen
+            window.location.replace("https://polisci.msu.edu/");
+        });
     });
 
     API.addGlobal({
@@ -68,43 +111,6 @@ define(['managerAPI'], function(Manager){
             templateUrl: 'lastpage.jst',
             title: 'End',
             header: 'You have completed the study'
-        }],
-
-        // End Task: Collects logged data, POSTs to DataPipe, and redirects
-        endTask: [{
-            type: 'post',
-            name: 'endTask',
-            post: function(success, error, data, API){
-                var sessionId = "study2_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
-                
-                // Retrieve all logged trial data formatted as CSV from Minno's logger
-                var dataAsString = API.getLogs ? API.getLogs() : JSON.stringify(data || {});
-
-                fetch("https://pipe.jspsych.org/api/data/", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "*/*"
-                    },
-                    body: JSON.stringify({
-                        experimentID: "KQ2pq6uCiqYL",
-                        filename: sessionId + ".csv",
-                        data: dataAsString
-                    })
-                })
-                .then(function(response) {
-                    if (!response.ok) {
-                        throw new Error("DataPipe response error");
-                    }
-                    console.log("Data saved successfully.");
-                    window.location.replace("https://polisci.msu.edu/");
-                })
-                .catch(function(err) {
-                    console.error("DataPipe Upload Error:", err);
-                    alert("There was an error saving your data. Redirecting...");
-                    window.location.replace("https://polisci.msu.edu/");
-                });
-            }
         }]
     });
 
@@ -146,8 +152,7 @@ define(['managerAPI'], function(Manager){
         { inherit: 'genderiat' },
         { inherit: 'explicits' },
         { inherit: 'debriefing' },
-        { inherit: 'lastpage' },
-        { inherit: 'endTask' } // Triggers data POST & redirect upon finishing lastpage
+        { inherit: 'lastpage' }
     ]);
 
     return API.script;
