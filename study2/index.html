@@ -13,6 +13,16 @@
             user-drag: none;
             pointer-events: none;
         }
+
+        /* Glyphicon font fallback to clean up 403 warnings */
+        @font-face {
+            font-family: 'Glyphicons Halflings';
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.eot');
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+                 url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.woff2') format('woff2'),
+                 url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.woff') format('woff'),
+                 url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.ttf') format('truetype');
+        }
     </style>
 
     <script>
@@ -32,47 +42,6 @@
             document.body.appendChild(container);
 
             minnoJS(canvas, "mgr.js");
-
-            minnoJS.onEnd = async function(data) {
-                try {
-                    console.log("Experiment completed. Data payload:", data);
-
-                    const sessionId = "study2_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
-
-                    let dataAsString = "";
-                    if (typeof data === "string") {
-                        dataAsString = data;
-                    } else if (data && typeof data.getCSV === "function") {
-                        dataAsString = data.getCSV();
-                    } else {
-                        dataAsString = JSON.stringify(data || {});
-                    }
-
-                    const response = await fetch("https://pipe.jspsych.org/api/data/", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "*/*"
-                        },
-                        body: JSON.stringify({
-                            experimentID: "KQ2pq6uCiqYL", // Matches your DataPipe active project ID
-                            filename: sessionId + ".csv",
-                            data: dataAsString
-                        })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(await response.text());
-                    }
-
-                    console.log("Data successfully saved to DataPipe/OSF.");
-                    window.location.replace("https://polisci.msu.edu/");
-
-                } catch (error) {
-                    console.error("DataPipe Error:", error);
-                    alert("There was a problem saving your responses. Please contact the researcher.");
-                }
-            };
         }
     </script>
 </head>

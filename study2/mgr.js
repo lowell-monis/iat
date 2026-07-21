@@ -5,10 +5,10 @@ define(['managerAPI'], function(Manager){
     API.setName('mgr');
     API.addSettings('skip', true);
 
-    // Add this near the top of mgr.js (under API.addSettings('skip', true);)
+    // Keep internal logging enabled so task data is recorded in memory
     API.addSettings('logger', {
         type: 'csv',
-        url: '' // Keep empty so it doesn't post to a server, but forces internal buffering
+        url: '' 
     });
 
     API.addGlobal({
@@ -68,6 +68,43 @@ define(['managerAPI'], function(Manager){
             templateUrl: 'lastpage.jst',
             title: 'End',
             header: 'You have completed the study'
+        }],
+
+        // End Task: Collects logged data, POSTs to DataPipe, and redirects
+        endTask: [{
+            type: 'post',
+            name: 'endTask',
+            post: function(success, error, data, API){
+                var sessionId = "study2_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
+                
+                // Retrieve all logged trial data formatted as CSV from Minno's logger
+                var dataAsString = API.getLogs ? API.getLogs() : JSON.stringify(data || {});
+
+                fetch("https://pipe.jspsych.org/api/data/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "*/*"
+                    },
+                    body: JSON.stringify({
+                        experimentID: "KQ2pq6uCiqYL",
+                        filename: sessionId + ".csv",
+                        data: dataAsString
+                    })
+                })
+                .then(function(response) {
+                    if (!response.ok) {
+                        throw new Error("DataPipe response error");
+                    }
+                    console.log("Data saved successfully.");
+                    window.location.replace("https://polisci.msu.edu/");
+                })
+                .catch(function(err) {
+                    console.error("DataPipe Upload Error:", err);
+                    alert("There was an error saving your data. Redirecting...");
+                    window.location.replace("https://polisci.msu.edu/");
+                });
+            }
         }]
     });
 
@@ -109,7 +146,8 @@ define(['managerAPI'], function(Manager){
         { inherit: 'genderiat' },
         { inherit: 'explicits' },
         { inherit: 'debriefing' },
-        { inherit: 'lastpage' }
+        { inherit: 'lastpage' },
+        { inherit: 'endTask' } // Triggers data POST & redirect upon finishing lastpage
     ]);
 
     return API.script;
