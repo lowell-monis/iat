@@ -91,8 +91,7 @@ define(['questAPI'], function(Quest){
         {
             inherit: 'basicPage',
             questions: [
-                { inherit: 'party_q' },
-                { inherit: 'device_q' }
+                { inherit: 'party_q' }
             ]
         }
     ]);
