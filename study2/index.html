@@ -36,60 +36,52 @@
 
             minnoJS(canvas,"mgr.js");
 
-            minnoJS.onEnd = async function(data){
+            minnoJS.onEnd = async function(data) {
+                try {
+                    console.log("Raw experiment data:", data);
 
-                try{
+                    const sessionId = "study2_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
 
-                    console.log("Experiment data:", data);
+                    // Standardize data extraction from MinnoJS
+                    let dataAsString = "";
+                    
+                    if (typeof data === "string") {
+                        dataAsString = data;
+                    } else if (data && typeof data.getCSV === "function") {
+                        // If Minno passes a logger instance with a CSV helper
+                        dataAsString = data.getCSV();
+                    } else if (Array.isArray(data)) {
+                        // If data is an array of trial objects
+                        dataAsString = JSON.stringify(data);
+                    } else {
+                        dataAsString = JSON.stringify(data || {});
+                    }
 
-                    const sessionId =
-                        "study2_" +
-                        Date.now() +
-                        "_" +
-                        Math.random().toString(36).substring(2,8);
+                    const response = await fetch("https://pipe.jspsych.org/api/data/", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "*/*"
+                        },
+                        body: JSON.stringify({
+                            experimentID: "KQ2pq6uCiqYL",
+                            filename: sessionId + ".csv",
+                            data: dataAsString
+                        })
+                    });
 
-                    const dataAsString =
-                        (typeof data === "string")
-                            ? data
-                            : JSON.stringify(data);
-
-                    const response = await fetch(
-                        "https://pipe.jspsych.org/api/data/",
-                        {
-                            method:"POST",
-                            headers:{
-                                "Content-Type":"application/json",
-                                "Accept":"*/*"
-                            },
-                            body:JSON.stringify({
-                                experimentID:"KQ2pq6uCiqYL",
-                                filename:sessionId + ".csv",
-                                data:dataAsString
-                            })
-                        }
-                    );
-
-                    if(!response.ok){
+                    if (!response.ok) {
                         throw new Error(await response.text());
                     }
 
                     console.log("Data successfully uploaded.");
-
                     window.location.replace("https://polisci.msu.edu/");
 
+                } catch (error) {
+                    console.error("DataPipe Error:", error);
+                    alert("There was a problem saving your responses. Please contact the researcher.");
                 }
-                catch(error){
-
-                    console.error(error);
-
-                    alert(
-                        "There was a problem saving your responses. Please contact the researcher."
-                    );
-
-                }
-
             };
-
         }
 
     </script>

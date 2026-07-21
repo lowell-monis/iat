@@ -5,6 +5,12 @@ define(['managerAPI'], function(Manager){
     API.setName('mgr');
     API.addSettings('skip', true);
 
+    // Add this near the top of mgr.js (under API.addSettings('skip', true);)
+    API.addSettings('logger', {
+        type: 'csv',
+        url: '' // Keep empty so it doesn't post to a server, but forces internal buffering
+    });
+
     API.addGlobal({
         genderiat: {},
         baseURL: './images/',
