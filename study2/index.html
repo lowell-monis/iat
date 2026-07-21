@@ -1,31 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/main.css"/>
 
     <style>
-        .container{
-            padding-top:15px;
+        .container {
+            padding-top: 15px;
         }
 
-        img{
-            -webkit-user-drag:none;
-            user-drag:none;
-            pointer-events:none;
+        img {
+            -webkit-user-drag: none;
+            user-drag: none;
+            pointer-events: none;
         }
     </style>
 
     <script>
-
         var scriptTag = document.createElement("script");
         scriptTag.src = "https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/pi-minno.js";
         scriptTag.onload = onLoad;
         scriptTag.onreadystatechange = onLoad;
         document.head.appendChild(scriptTag);
 
-        function onLoad(){
-
+        function onLoad() {
             var container = document.createElement("div");
             container.className = "container";
 
@@ -34,25 +31,19 @@
 
             document.body.appendChild(container);
 
-            minnoJS(canvas,"mgr.js");
+            minnoJS(canvas, "mgr.js");
 
             minnoJS.onEnd = async function(data) {
                 try {
-                    console.log("Raw experiment data:", data);
+                    console.log("Experiment completed. Data payload:", data);
 
                     const sessionId = "study2_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
 
-                    // Standardize data extraction from MinnoJS
                     let dataAsString = "";
-                    
                     if (typeof data === "string") {
                         dataAsString = data;
                     } else if (data && typeof data.getCSV === "function") {
-                        // If Minno passes a logger instance with a CSV helper
                         dataAsString = data.getCSV();
-                    } else if (Array.isArray(data)) {
-                        // If data is an array of trial objects
-                        dataAsString = JSON.stringify(data);
                     } else {
                         dataAsString = JSON.stringify(data || {});
                     }
@@ -64,7 +55,7 @@
                             "Accept": "*/*"
                         },
                         body: JSON.stringify({
-                            experimentID: "KQ2pq6uCiqYL",
+                            experimentID: "KQ2pq6uCiqYL", // Matches your DataPipe active project ID
                             filename: sessionId + ".csv",
                             data: dataAsString
                         })
@@ -74,7 +65,7 @@
                         throw new Error(await response.text());
                     }
 
-                    console.log("Data successfully uploaded.");
+                    console.log("Data successfully saved to DataPipe/OSF.");
                     window.location.replace("https://polisci.msu.edu/");
 
                 } catch (error) {
@@ -83,12 +74,8 @@
                 }
             };
         }
-
     </script>
-
 </head>
-
 <body>
-
 </body>
 </html>
