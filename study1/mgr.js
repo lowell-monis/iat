@@ -5,31 +5,67 @@ define(['managerAPI'], function(Manager){
     API.setName('mgr');
     API.addSettings('skip', true);
 
-    API.addSettings('logger', {
-        logger: [{
-            type: 'post',
-            url: 'https://pipe.jspsych.org/api/data/',
-            serialize: function(name, settings, global, current) {
-                return JSON.stringify({
-                    experimentID: '12MlCB7eHnjP',
-                    filename: global.$sessionId + '_' + name + '.csv',
-                    data: settings.data
-                });
-            },
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*'
-            }
-        }]
-    });
-
     API.addGlobal({
         raceiat: {},
         baseURL: './images/',
         blackLabels: 'Black people',
         whiteLabels: 'White people',
         disabledLabels: 'Physically Disabled People',
-        ableLabels: 'Physically Abled People'
+        ableLabels: 'Physically Abled People',
+        collectedLogs: []
+    });
+
+    // Capture task CSV logs emitted by MinnoJS into global storage
+    API.addSettings('logger', {
+        logger: [{
+            type: 'post',
+            url: '', 
+            serialize: function(name, settings, global, current) {
+                if (settings && settings.data) {
+                    if (!global.collectedLogs) {
+                        global.collectedLogs = [];
+                    }
+                    global.collectedLogs.push("=== Task: " + name + " ===\n" + settings.data);
+                }
+                return "";
+            }
+        }]
+    });
+
+    // Native MinnoJS hook: Fires automatically when the sequence ends
+    API.addSettings('onEnd', function() {
+        var global = API.getGlobal ? API.getGlobal() : {};
+        var logs = global.collectedLogs || [];
+        var dataAsString = logs.join("\n\n");
+        var sessionId = "study1_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
+
+        if (!dataAsString || dataAsString.trim() === "") {
+            dataAsString = "No trial data logged.";
+        }
+
+        fetch("https://pipe.jspsych.org/api/data/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "*/*"
+            },
+            body: JSON.stringify({
+                experimentID: "12MlCB7eHnjP",
+                filename: sessionId + ".csv",
+                data: dataAsString
+            })
+        })
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error("DataPipe response error: " + response.statusText);
+            }
+            console.log("DataPipe upload successful.");
+            window.location.replace("https://polisci.msu.edu/");
+        })
+        .catch(function(err) {
+            console.error("DataPipe Upload Failed:", err);
+            window.location.replace("https://polisci.msu.edu/");
+        });
     });
 
     API.addTasksSet({

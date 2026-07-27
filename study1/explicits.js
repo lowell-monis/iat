@@ -75,13 +75,6 @@ define(['questAPI'], function(Quest){
         ]
     });
 
-    // Device type — invisible question, auto-recorded from MinnoJS touch detection
-    API.addQuestionsSet('device_q', {
-        type: 'hidden',
-        name: 'device_type',
-        response: isTouch ? 'touch' : 'computer'
-    });
-
     API.addSequence([
         {
             inherit: 'basicPage',
@@ -98,8 +91,7 @@ define(['questAPI'], function(Quest){
         {
             inherit: 'basicPage',
             questions: [
-                { inherit: 'party_q' },
-                { inherit: 'device_q' }
+                { inherit: 'party_q' }
             ]
         }
     ]);

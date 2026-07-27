@@ -1,59 +1,50 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/main.css" />
-        <style type="text/css">
-            .container {padding-top: 15px;}
-            img {
-                -webkit-user-drag: none;
-                user-drag: none;
-                pointer-events: none;
-            }
-        </style>
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/main.css"/>
 
-        <script>
-            var scriptTag = document.createElement('script');
-            scriptTag.src = 'https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/pi-minno.js';
-            scriptTag.onload = onLoad;
-            scriptTag.onreadystatechange = onLoad;
-            document.head.appendChild(scriptTag);
+    <style>
+        .container {
+            padding-top: 15px;
+        }
 
-            function onLoad() {
-                var container = document.createElement('div');
-                container.className = 'container';
+        img {
+            -webkit-user-drag: none;
+            user-drag: none;
+            pointer-events: none;
+        }
 
-                var canvas = document.createElement('div');
-                container.appendChild(canvas);
-                document.body.appendChild(container);
+        /* Glyphicon font fallback to clean up 403 warnings */
+        @font-face {
+            font-family: 'Glyphicons Halflings';
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.eot');
+            src: url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+                 url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.woff2') format('woff2'),
+                 url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.woff') format('woff'),
+                 url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.ttf') format('truetype');
+        }
+    </style>
 
-                minnoJS(canvas, 'mgr.js');
+    <script>
+        var scriptTag = document.createElement("script");
+        scriptTag.src = "https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/pi-minno.js";
+        scriptTag.onload = onLoad;
+        scriptTag.onreadystatechange = onLoad;
+        document.head.appendChild(scriptTag);
 
-                minnoJS.onEnd = function(data) {
-                    var dataAsString = JSON.stringify(data);
-                    var sessionId = 'sess_' + Date.now();
+        function onLoad() {
+            var container = document.createElement("div");
+            container.className = "container";
 
-                    fetch('https://pipe.jspsych.org/api/data/', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': '*/*'
-                        },
-                        body: JSON.stringify({
-                            experimentID: '12MlCB7eHnjP',
-                            filename: sessionId + '.csv',
-                            data: dataAsString
-                        })
-                    })
-                    .then(function() {
-                        window.location.href = 'https://polisci.msu.edu/';
-                    })
-                    .catch(function(error) {
-                        console.error('DataPipe upload failed:', error);
-                        window.location.href = 'https://polisci.msu.edu/';
-                    });
-                };
-            }
-        </script>
-    </head>
-    <body>
-    </body>
+            var canvas = document.createElement("div");
+            container.appendChild(canvas);
+
+            document.body.appendChild(container);
+
+            minnoJS(canvas, "mgr.js");
+        }
+    </script>
+</head>
+<body>
+</body>
 </html>

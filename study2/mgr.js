@@ -5,29 +5,44 @@ define(['managerAPI'], function(Manager){
     API.setName('mgr');
     API.addSettings('skip', true);
 
-    // Keep internal CSV logging enabled so data accumulates in memory
+    API.addGlobal({
+        genderiat: {},
+        baseURL: './images/',
+        womenLabels: 'Women',
+        menLabels: 'Men',
+        disabledLabels: 'Physically Disabled People',
+        ableLabels: 'Physically Abled People',
+        collectedLogs: []
+    });
+
+    // Capture task CSV logs emitted by MinnoJS into global storage
     API.addSettings('logger', {
-        type: 'csv',
-        url: '' 
+        logger: [{
+            type: 'post',
+            url: '', 
+            serialize: function(name, settings, global, current) {
+                if (settings && settings.data) {
+                    if (!global.collectedLogs) {
+                        global.collectedLogs = [];
+                    }
+                    global.collectedLogs.push("=== Task: " + name + " ===\n" + settings.data);
+                }
+                return "";
+            }
+        }]
     });
 
     // Native MinnoJS hook: Fires automatically when the sequence ends
     API.addSettings('onEnd', function() {
+        var global = API.getGlobal ? API.getGlobal() : {};
+        var logs = global.collectedLogs || [];
+        var dataAsString = logs.join("\n\n");
         var sessionId = "study2_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
 
-        // Retrieve recorded trial logs from MinnoJS global store
-        var dataAsString = "";
-        try {
-            if (API.getLogs) {
-                dataAsString = API.getLogs();
-            } else if (window.minnoJS && window.minnoJS.logger) {
-                dataAsString = window.minnoJS.logger();
-            }
-        } catch (e) {
-            console.error("Error retrieving logs:", e);
+        if (!dataAsString || dataAsString.trim() === "") {
+            dataAsString = "No trial data logged.";
         }
 
-        // Send payload to DataPipe
         fetch("https://pipe.jspsych.org/api/data/", {
             method: "POST",
             headers: {
@@ -37,30 +52,20 @@ define(['managerAPI'], function(Manager){
             body: JSON.stringify({
                 experimentID: "KQ2pq6uCiqYL",
                 filename: sessionId + ".csv",
-                data: dataAsString || "no_data_logged"
+                data: dataAsString
             })
         })
         .then(function(response) {
             if (!response.ok) {
-                throw new Error("DataPipe response error");
+                throw new Error("DataPipe response error: " + response.statusText);
             }
             console.log("DataPipe upload successful.");
             window.location.replace("https://polisci.msu.edu/");
         })
         .catch(function(err) {
             console.error("DataPipe Upload Failed:", err);
-            // Redirect anyway so the participant isn't stuck on a blank screen
             window.location.replace("https://polisci.msu.edu/");
         });
-    });
-
-    API.addGlobal({
-        genderiat: {},
-        baseURL: './images/',
-        womenLabels: 'Women',
-        menLabels: 'Men',
-        disabledLabels: 'Physically Disabled People',
-        ableLabels: 'Physically Abled People'
     });
 
     API.addTasksSet({
