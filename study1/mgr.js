@@ -15,21 +15,25 @@ define(['managerAPI'], function(Manager){
         collectedLogs: []
     });
 
-    // Capture task CSV logs emitted by MinnoJS into global storage
+    // Custom MinnoJS logger post function to buffer trial CSV logs in memory
     API.addSettings('logger', {
-        logger: [{
-            type: 'post',
-            url: '', 
-            serialize: function(name, settings, global, current) {
-                if (settings && settings.data) {
-                    if (!global.collectedLogs) {
-                        global.collectedLogs = [];
-                    }
-                    global.collectedLogs.push("=== Task: " + name + " ===\n" + settings.data);
+        type: 'csv',
+        post: function(success, error, data, API) {
+            try {
+                var global = API.getGlobal ? API.getGlobal() : {};
+                if (!global.collectedLogs) {
+                    global.collectedLogs = [];
                 }
-                return "";
+                if (data) {
+                    global.collectedLogs.push(data);
+                }
+            } catch (e) {
+                console.error("Error buffering log data:", e);
             }
-        }]
+            if (typeof success === 'function') {
+                success();
+            }
+        }
     });
 
     // Native MinnoJS hook: Fires automatically when the sequence ends
