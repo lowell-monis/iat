@@ -12,14 +12,15 @@ define(['questAPI'], function(Quest){
     });
 
     API.addQuestionsSet('basicQ', {
-        decline: true,
+        decline: 'true',
         required: true,
         errorMsg: {
             required: isTouch
                 ? 'Please select an answer, or click \'Decline\''
                 : 'Please select an answer, or click \'Decline to Answer\''
         },
-        numericValues: true
+        autoSubmit: 'true',
+        numericValues: 'true'
     });
 
     API.addQuestionsSet('basicSelect', {
