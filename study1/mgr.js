@@ -1,6 +1,12 @@
-define(['managerAPI'], function(Manager){
+define([
+    'managerAPI',
+    'https://cdn.jsdelivr.net/gh/minnojs/minno-datapipe@1.*/datapipe.min.js'
+], function(Manager){
 
     var API = new Manager();
+
+    // Initialize official DataPipe logger for MinnoJS (Study 1)
+    init_data_pipe(API, '12MlCB7eHnjP', { file_type: 'csv' });
 
     API.setName('mgr');
     API.addSettings('skip', true);
@@ -11,65 +17,7 @@ define(['managerAPI'], function(Manager){
         blackLabels: 'Black people',
         whiteLabels: 'White people',
         disabledLabels: 'Physically Disabled People',
-        ableLabels: 'Physically Abled People',
-        collectedLogs: []
-    });
-
-    // Custom MinnoJS logger post function to buffer trial CSV logs in memory
-    API.addSettings('logger', {
-        type: 'csv',
-        post: function(success, error, data, API) {
-            try {
-                var global = API.getGlobal ? API.getGlobal() : {};
-                if (!global.collectedLogs) {
-                    global.collectedLogs = [];
-                }
-                if (data) {
-                    global.collectedLogs.push(data);
-                }
-            } catch (e) {
-                console.error("Error buffering log data:", e);
-            }
-            if (typeof success === 'function') {
-                success();
-            }
-        }
-    });
-
-    // Native MinnoJS hook: Fires automatically when the sequence ends
-    API.addSettings('onEnd', function() {
-        var global = API.getGlobal ? API.getGlobal() : {};
-        var logs = global.collectedLogs || [];
-        var dataAsString = logs.join("\n\n");
-        var sessionId = "study1_" + Date.now() + "_" + Math.random().toString(36).substring(2, 8);
-
-        if (!dataAsString || dataAsString.trim() === "") {
-            dataAsString = "No trial data logged.";
-        }
-
-        fetch("https://pipe.jspsych.org/api/data/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "*/*"
-            },
-            body: JSON.stringify({
-                experimentID: "12MlCB7eHnjP",
-                filename: sessionId + ".csv",
-                data: dataAsString
-            })
-        })
-        .then(function(response) {
-            if (!response.ok) {
-                throw new Error("DataPipe response error: " + response.statusText);
-            }
-            console.log("DataPipe upload successful.");
-            window.location.replace("https://polisci.msu.edu/");
-        })
-        .catch(function(err) {
-            console.error("DataPipe Upload Failed:", err);
-            window.location.replace("https://polisci.msu.edu/");
-        });
+        ableLabels: 'Physically Abled People'
     });
 
     API.addTasksSet({
@@ -120,6 +68,19 @@ define(['managerAPI'], function(Manager){
             templateUrl: 'lastpage.jst',
             title: 'End',
             header: 'You have completed the study'
+        }],
+
+        // Wait task: Holds until DataPipe server acknowledges data upload
+        uploading: uploading_task({
+            header: 'Just a moment',
+            body: 'Please wait while we save your data...'
+        }),
+
+        // Auto-redirect task after lastpage
+        redirect: [{
+            type: 'redirect',
+            name: 'redirecting',
+            url: 'https://polisci.msu.edu/'
         }]
     });
 
@@ -161,7 +122,9 @@ define(['managerAPI'], function(Manager){
         { inherit: 'raceiat' },
         { inherit: 'explicits' },
         { inherit: 'debriefing' },
-        { inherit: 'lastpage' }
+        { inherit: 'uploading' },
+        { inherit: 'lastpage' },
+        { inherit: 'redirect' }
     ]);
 
     return API.script;
