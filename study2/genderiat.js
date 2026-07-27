@@ -45,7 +45,6 @@ define(['pipAPI', 'https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10
                 height: 4
             },
             stimulusMedia: [
-                // *** Replace with your actual disabled image filenames (with .png extension) ***
                 { image: 'disabled1.png' },
                 { image: 'disabled2.png' },
                 { image: 'disabled3.png' },
@@ -63,7 +62,6 @@ define(['pipAPI', 'https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10
                 height: 4
             },
             stimulusMedia: [
-                // *** Replace with your actual abled image filenames (with .png extension) ***
                 { image: 'abled1.png' },
                 { image: 'abled2.png' },
                 { image: 'abled3.png' },

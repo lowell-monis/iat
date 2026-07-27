@@ -28,7 +28,6 @@ define(['questAPI'], function(Quest){
         type: 'selectOne'
     });
 
-    // Q1: Gender
     API.addQuestionsSet('gender_q', {
         inherit: 'basicSelect',
         name: 'gender',
@@ -41,7 +40,6 @@ define(['questAPI'], function(Quest){
         ]
     });
 
-    // Q2: Race (mark all that apply) — selectMulti is the correct MinnoJS type
     API.addQuestionsSet('race_q', {
         type: 'selectMulti',
         name: 'race',
@@ -60,7 +58,6 @@ define(['questAPI'], function(Quest){
         ]
     });
 
-    // Q3: Party ID
     API.addQuestionsSet('party_q', {
         inherit: 'basicSelect',
         name: 'party_id',

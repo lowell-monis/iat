@@ -76,7 +76,6 @@ define([
             body: 'Please wait while we save your data...'
         }),
 
-        // Auto-redirect task after lastpage
         redirect: [{
             type: 'redirect',
             name: 'redirecting',
