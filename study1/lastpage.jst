@@ -10,8 +10,11 @@
 	<p class='lead'>
 		This is the end of the study. Please press the button below for instructions on receiving your reward.
 	</p>
+	<p style="color: #555; margin-top: 15px;">
+		<em>Note: After clicking <strong>Finish</strong>, saving your data and redirecting may take a few seconds. Please stay on this page.</em>
+	</p>
 	<div class="text-center proceed" style="margin: 30px auto 10px;">
-		<button pi-message-done type="button" class="btn btn-primary">
+		<button pi-message-done type="button" class="btn btn-primary" onclick="this.innerHTML='Saving &amp; Redirecting...'; this.style.opacity=0.7;">
 			Finish
 		</button>
 	</div>
