@@ -3,10 +3,18 @@ define([
     'https://cdn.jsdelivr.net/gh/minnojs/minno-datapipe@1.*/datapipe.min.js'
 ], function(Manager){
 
-    var API = new Manager();
+    var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    var deviceType = isMobile ? (isTouch ? 'mobile_touch' : 'mobile_other') : (isTouch ? 'desktop_touch' : 'desktop_mouse');
 
-    // Initialize official DataPipe logger for MinnoJS (Study 2)
-    init_data_pipe(API, 'KQ2pq6uCiqYL', { file_type: 'csv' });
+    init_data_pipe(API, 'KQ2pq6uCiqYL', {
+        file_type: 'csv',
+        params: {
+            device_touch: isTouch,
+            device_mobile: isMobile,
+            device_type: deviceType
+        }
+    });
 
     API.setName('mgr');
     API.addSettings('skip', true);
