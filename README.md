@@ -112,13 +112,17 @@ survey_data <- read_csv("path/to/explicits.csv")
 final_dataset <- left_join(d_scores, survey_data, by = "sessionId")
 ```
 
-### Python Environment Management (`uv`)
-If you manage your data processing pipelines in Python (`pandas`, `numpy`, `scipy`), we recommend using [`uv`](https://github.com/astral-sh/uv) by Astral for environment and package management:
+### Developer Workflows & `just` Recipes
+
+This repository includes a `justfile` and `pyproject.toml` for task automation, code formatting (`ruff`, `black`, `isort` capped at 120 chars), and validation:
+
 ```bash
-# Install dependencies with uv
-uv venv
-source .venv/bin/activate
-uv pip install pandas numpy scipy matplotlib
+just setup        # Create virtualenv with uv and install dependencies
+just fmt          # Format Python files using ruff, isort, and black (120 char line length)
+just lint         # Lint Python files using ruff
+just check-js     # Validate JavaScript syntax across study scripts
+just check        # Run all lints and syntax checks
+just run-analysis # Execute Python data processing pipeline
 ```
 
 ---
