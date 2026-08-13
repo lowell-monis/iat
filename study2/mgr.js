@@ -3,10 +3,13 @@ define([
     'https://cdn.jsdelivr.net/gh/minnojs/minno-datapipe@1.*/datapipe.min.js'
 ], function(Manager){
 
+    var API = new Manager();
+
     var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
     var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     var deviceType = isMobile ? (isTouch ? 'mobile_touch' : 'mobile_other') : (isTouch ? 'desktop_touch' : 'desktop_mouse');
 
+    // DATAPIPE CONFIGURATION: Replace 'KQ2pq6uCiqYL' with your DataPipe Experiment ID
     init_data_pipe(API, 'KQ2pq6uCiqYL', {
         file_type: 'csv',
         params: {
@@ -19,9 +22,10 @@ define([
     API.setName('mgr');
     API.addSettings('skip', true);
 
+    // STUDY CONFIGURATION: Customize labels and image folder path below
     API.addGlobal({
         genderiat: {},
-        baseURL: './images/',
+        baseURL: './images/', // Path to folder containing your stimulus images
         womenLabels: 'Women',
         menLabels: 'Men',
         disabledLabels: 'Physically Disabled People',
@@ -84,6 +88,7 @@ define([
             body: 'Please wait while we save your data...'
         }),
 
+        // REDIRECT URL: Change to your completion / reward redirect URL
         redirect: [{
             type: 'redirect',
             name: 'redirecting',

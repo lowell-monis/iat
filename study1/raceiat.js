@@ -3,6 +3,7 @@ define(['pipAPI', 'https://cdn.jsdelivr.net/gh/baranan/minno-tasks@0.*/IAT/iat10
     let global = API.getGlobal();
 
     return iatExtension({
+        // TARGET CATEGORY 1: Customize category name & stimulus image filenames
         category1: {
             name: global.blackLabels,
             title: {
