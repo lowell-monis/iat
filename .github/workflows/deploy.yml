@@ -1,0 +1,63 @@
+name: Deploy GitHub Pages with Secrets
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Inject GitHub Secrets into Study Scripts
+        run: |
+          # Inject DataPipe Study 1 ID if secret exists, else keep default
+          if [ -n "${{ secrets.DATAPIPE_STUDY1_ID }}" ]; then
+            sed -i "s/__DATAPIPE_STUDY1_ID__/${{ secrets.DATAPIPE_STUDY1_ID }}/g" study1/mgr.js
+          else
+            sed -i "s/__DATAPIPE_STUDY1_ID__/12MlCB7eHnjP/g" study1/mgr.js
+          fi
+
+          # Inject DataPipe Study 2 ID if secret exists, else keep default
+          if [ -n "${{ secrets.DATAPIPE_STUDY2_ID }}" ]; then
+            sed -i "s/__DATAPIPE_STUDY2_ID__/${{ secrets.DATAPIPE_STUDY2_ID }}/g" study2/mgr.js
+          else
+            sed -i "s/__DATAPIPE_STUDY2_ID__/KQ2pq6uCiqYL/g" study2/mgr.js
+          fi
+
+          # Inject Completion Redirect URL if secret exists, else fallback to PLS website
+          COMPLETION_URL="${{ secrets.COMPLETION_REDIRECT_URL }}"
+          if [ -z "$COMPLETION_URL" ]; then
+            COMPLETION_URL="https://polisci.msu.edu/"
+          fi
+
+          sed -i "s|__COMPLETION_REDIRECT_URL__|$COMPLETION_URL|g" study1/mgr.js
+          sed -i "s|__COMPLETION_REDIRECT_URL__|$COMPLETION_URL|g" study2/mgr.js
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

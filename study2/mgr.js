@@ -9,8 +9,8 @@ define([
     var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     var deviceType = isMobile ? (isTouch ? 'mobile_touch' : 'mobile_other') : (isTouch ? 'desktop_touch' : 'desktop_mouse');
 
-    // DATAPIPE CONFIGURATION: Replace 'KQ2pq6uCiqYL' with your DataPipe Experiment ID
-    init_data_pipe(API, 'KQ2pq6uCiqYL', {
+    // DATAPIPE CONFIGURATION: Replaced at deployment time via GitHub Actions or fallback
+    init_data_pipe(API, '__DATAPIPE_STUDY2_ID__', {
         file_type: 'csv',
         params: {
             device_touch: isTouch,
@@ -25,7 +25,7 @@ define([
     // STUDY CONFIGURATION: Customize labels and image folder path below
     API.addGlobal({
         genderiat: {},
-        baseURL: './images/', // Path to folder containing your stimulus images
+        baseURL: './images/',
         womenLabels: 'Women',
         menLabels: 'Men',
         disabledLabels: 'Physically Disabled People',
@@ -36,6 +36,12 @@ define([
         instructions: [{
             type: 'message',
             buttonText: 'Continue'
+        }],
+
+        consent: [{
+            type: 'quest',
+            name: 'consent',
+            scriptUrl: 'consent.js'
         }],
 
         intro: [{
@@ -82,61 +88,57 @@ define([
             header: 'You have completed the study'
         }],
 
-        // Wait task: Holds until DataPipe server acknowledges data upload
         uploading: uploading_task({
             header: 'Just a moment',
             body: 'Please wait while we save your data...'
         }),
 
-        // REDIRECT URL: Change to your completion / reward redirect URL
+        // Main completion redirect (injected from GitHub Secret or fallback)
         redirect: [{
             type: 'redirect',
             name: 'redirecting',
+            url: '__COMPLETION_REDIRECT_URL__'
+        }],
+
+        // Separate decline page and redirect to MSU PLS website for non-participants
+        decline_page: [{
+            inherit: 'instructions',
+            name: 'decline_page',
+            templateUrl: 'decline.jst',
+            title: 'Thank You',
+            header: 'Thank You'
+        }],
+
+        decline_redirect: [{
+            type: 'redirect',
+            name: 'decline_redirecting',
             url: 'https://polisci.msu.edu/'
         }]
     });
 
     API.addSequence([
         { type: 'isTouch' },
-
+        { inherit: 'consent' },
         {
             mixer: 'branch',
-            conditions: { compare: 'global.$isTouch', to: true },
+            conditions: [
+                { compare: 'global.consent_choice', to: 2 }
+            ],
             data: [
-                {
-                    type: 'injectStyle',
-                    css: [
-                        '[piq-page] {background-color: #fff; border: 1px solid transparent; border-radius: 4px; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05); margin-bottom: 20px; border-color: #bce8f1;}',
-                        '[piq-page] > ol {margin: 15px;}',
-                        '[piq-page] > .btn-group {margin: 0px 15px 15px 15px;}',
-                        '.container {padding:5px;}',
-                        '[pi-quest]::before, [pi-quest]::after {content: " ";display: table;}',
-                        '[pi-quest]::after {clear: both;}',
-                        '[pi-quest] h3 { border-bottom: 1px solid transparent; border-top-left-radius: 3px; border-top-right-radius: 3px; padding: 10px 15px; color: inherit; font-size: 2em; margin-bottom: 20px; margin-top: 0;background-color: #d9edf7;border-color: #bce8f1;color: #31708f;}',
-                        '[pi-quest] .form-group > label {font-size:1.2em; font-weight:normal;}',
-                        '[pi-quest] .btn-toolbar {margin:15px;float:none !important; text-align:center;position:relative;}',
-                        '[pi-quest] [ng-click="decline($event)"] {position:absolute;right:0;bottom:0}',
-                        '[pi-quest] [ng-click="submit()"] {width:30%;line-height: 1.3333333;border-radius: 6px;}',
-                        '@media (min-width: 480px) {',
-                        ' [pi-quest] [ng-click="submit()"] {width:30%;padding: 10px 16px;font-size: 1.6em;}',
-                        '}',
-                        '@media (max-width: 480px) {',
-                        ' [pi-quest] [ng-click="submit()"] {padding: 8px 13px;font-size: 1.2em;}',
-                        ' [pi-quest] [ng-click="decline($event)"] {font-size: 0.9em;padding:3px 6px;}',
-                        '}'
-                    ]
-                }
+                { inherit: 'decline_page' },
+                { inherit: 'decline_redirect' }
+            ],
+            else: [
+                { inherit: 'intro' },
+                { inherit: 'genderiat_instructions' },
+                { inherit: 'genderiat' },
+                { inherit: 'explicits' },
+                { inherit: 'debriefing' },
+                { inherit: 'uploading' },
+                { inherit: 'lastpage' },
+                { inherit: 'redirect' }
             ]
-        },
-
-        { inherit: 'intro' },
-        { inherit: 'genderiat_instructions' },
-        { inherit: 'genderiat' },
-        { inherit: 'explicits' },
-        { inherit: 'debriefing' },
-        { inherit: 'uploading' },
-        { inherit: 'lastpage' },
-        { inherit: 'redirect' }
+        }
     ]);
 
     return API.script;
