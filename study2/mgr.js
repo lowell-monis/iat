@@ -13,7 +13,7 @@ define([
     var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     var deviceType = isMobile ? (isTouch ? 'mobile_touch' : 'mobile_other') : (isTouch ? 'desktop_touch' : 'desktop_mouse');
 
-    // DATAPIPE CONFIGURATION: Replaced at deployment time via GitHub Actions or fallback
+    // DATAPIPE CONFIGURATION: Experiment ID replaced via GitHub Secret at deploy time or fallback
     init_data_pipe(API, '__DATAPIPE_STUDY2_ID__', {
         file_type: 'csv',
         params: {
@@ -27,24 +27,9 @@ define([
     API.setName('mgr');
     API.addSettings('skip', true);
 
-    // Default Verasight Redirect URLs for Study 2 (Part 2)
-    var defaultCompleteUrl = 'https://backend.verasight.io/surveys/redirect?isid=6aaac3bdc12cd10dfe2ab527&vsref=1&vsid=' + encodeURIComponent(vsid);
-    var defaultTerminateUrl = 'https://backend.verasight.io/surveys/redirect?isid=6aaac3bdc12cd10dfe2ab527&vsref=2&vsid=' + encodeURIComponent(vsid);
-
-    // Build-time placeholders from GitHub Secrets if available
-    var completeUrl = '__COMPLETION_REDIRECT_URL__';
-    if (completeUrl === '__COMPLETION_REDIRECT_URL__' || !completeUrl) {
-        completeUrl = defaultCompleteUrl;
-    } else if (vsid && completeUrl.indexOf('vsid=') !== -1 && completeUrl.slice(-5) === 'vsid=') {
-        completeUrl = completeUrl + encodeURIComponent(vsid);
-    }
-
-    var terminateUrl = '__TERMINATE_REDIRECT_URL__';
-    if (terminateUrl === '__TERMINATE_REDIRECT_URL__' || !terminateUrl) {
-        terminateUrl = defaultTerminateUrl;
-    } else if (vsid && terminateUrl.indexOf('vsid=') !== -1 && terminateUrl.slice(-5) === 'vsid=') {
-        terminateUrl = terminateUrl + encodeURIComponent(vsid);
-    }
+    // Verasight Redirect URLs for Study 2 (Part 2)
+    var completeUrl = 'https://backend.verasight.io/surveys/redirect?isid=6aaac3bdc12cd10dfe2ab527&vsref=1&vsid=' + encodeURIComponent(vsid);
+    var terminateUrl = 'https://backend.verasight.io/surveys/redirect?isid=6aaac3bdc12cd10dfe2ab527&vsref=2&vsid=' + encodeURIComponent(vsid);
 
     API.addGlobal({
         genderiat: {},

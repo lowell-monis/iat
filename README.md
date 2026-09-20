@@ -42,19 +42,20 @@ To host your own version of these studies using GitHub Actions and GitHub Pages 
 ### Step 1: Fork or Clone the Repository
 Fork this repository to your GitHub account.
 
-### Step 2: Configure GitHub Repository Secrets
-Go to your GitHub repository $\rightarrow$ **Settings** $\rightarrow$ **Secrets and variables** $\rightarrow$ **Actions** $\rightarrow$ **New repository secret** and add the following 3 secrets:
+### Step 2: Configure Optional GitHub Repository Secrets (Optional)
+Redirect links (Verasight Complete and Terminate) are built into `mgr.js` and **do not require any secrets**.
+
+If you wish to override the default DataPipe Experiment IDs, you can go to **Settings $\rightarrow$ Secrets and variables $\rightarrow$ Actions** and add optional secrets:
 
 | Secret Name | Description / Value |
 | :--- | :--- |
-| `DATAPIPE_STUDY1_ID` | Your DataPipe Experiment ID for Study 1 (e.g. `12MlCB7eHnjP`) |
-| `DATAPIPE_STUDY2_ID` | Your DataPipe Experiment ID for Study 2 (e.g. `KQ2pq6uCiqYL`) |
-| `COMPLETION_REDIRECT_URL` | Your secret payment / reward completion URL (e.g. `https://app.prolific.co/submissions/complete?cc=YOUR_CODE` or Qualtrics URL) |
+| `DATAPIPE_STUDY1_ID` | (Optional) Custom DataPipe Experiment ID for Study 1 |
+| `DATAPIPE_STUDY2_ID` | (Optional) Custom DataPipe Experiment ID for Study 2 |
 
 ### Step 3: Enable GitHub Pages via Actions
 1. Go to **Settings $\rightarrow$ Pages**.
 2. Under **Build and deployment $\rightarrow$ Source**, select **GitHub Actions**.
-3. Every push to `main` will automatically trigger `.github/workflows/deploy.yml`, which injects your secrets into `mgr.js` during the build step and deploys the site to GitHub Pages.
+3. Every push to `main` will automatically trigger `.github/workflows/deploy.yml` and deploy the site to GitHub Pages.
 
 ---
 

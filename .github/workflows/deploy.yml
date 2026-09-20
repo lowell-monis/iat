@@ -1,4 +1,4 @@
-name: Deploy GitHub Pages with Secrets
+name: Deploy GitHub Pages
 
 on:
   push:
@@ -25,7 +25,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Inject GitHub Secrets into Study Scripts
+      - name: Inject DataPipe Experiment IDs
         run: |
           # Inject DataPipe Study 1 ID if secret exists, else keep default
           if [ -n "${{ secrets.DATAPIPE_STUDY1_ID }}" ]; then
@@ -40,15 +40,6 @@ jobs:
           else
             sed -i "s/__DATAPIPE_STUDY2_ID__/KQ2pq6uCiqYL/g" study2/mgr.js
           fi
-
-          # Inject Completion Redirect URL if secret exists, else fallback to PLS website
-          COMPLETION_URL="${{ secrets.COMPLETION_REDIRECT_URL }}"
-          if [ -z "$COMPLETION_URL" ]; then
-            COMPLETION_URL="https://polisci.msu.edu/"
-          fi
-
-          sed -i "s|__COMPLETION_REDIRECT_URL__|$COMPLETION_URL|g" study1/mgr.js
-          sed -i "s|__COMPLETION_REDIRECT_URL__|$COMPLETION_URL|g" study2/mgr.js
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
