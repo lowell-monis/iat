@@ -5,6 +5,10 @@ define([
 
     var API = new Manager();
 
+    // Extract Verasight URL Parameters (vsid / participant ID)
+    var urlParams = new URLSearchParams(window.location.search);
+    var vsid = urlParams.get('vsid') || urlParams.get('pid') || urlParams.get('id') || '';
+
     var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
     var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     var deviceType = isMobile ? (isTouch ? 'mobile_touch' : 'mobile_other') : (isTouch ? 'desktop_touch' : 'desktop_mouse');
@@ -13,6 +17,7 @@ define([
     init_data_pipe(API, '__DATAPIPE_STUDY2_ID__', {
         file_type: 'csv',
         params: {
+            vsid: vsid,
             device_touch: isTouch,
             device_mobile: isMobile,
             device_type: deviceType
@@ -22,14 +27,33 @@ define([
     API.setName('mgr');
     API.addSettings('skip', true);
 
-    // STUDY CONFIGURATION: Customize labels and image folder path below
+    // Default Verasight Redirect URLs for Study 2 (Part 2)
+    var defaultCompleteUrl = 'https://backend.verasight.io/surveys/redirect?isid=6aaac3bdc12cd10dfe2ab527&vsref=1&vsid=' + encodeURIComponent(vsid);
+    var defaultTerminateUrl = 'https://backend.verasight.io/surveys/redirect?isid=6aaac3bdc12cd10dfe2ab527&vsref=2&vsid=' + encodeURIComponent(vsid);
+
+    // Build-time placeholders from GitHub Secrets if available
+    var completeUrl = '__COMPLETION_REDIRECT_URL__';
+    if (completeUrl === '__COMPLETION_REDIRECT_URL__' || !completeUrl) {
+        completeUrl = defaultCompleteUrl;
+    } else if (vsid && completeUrl.indexOf('vsid=') !== -1 && completeUrl.slice(-5) === 'vsid=') {
+        completeUrl = completeUrl + encodeURIComponent(vsid);
+    }
+
+    var terminateUrl = '__TERMINATE_REDIRECT_URL__';
+    if (terminateUrl === '__TERMINATE_REDIRECT_URL__' || !terminateUrl) {
+        terminateUrl = defaultTerminateUrl;
+    } else if (vsid && terminateUrl.indexOf('vsid=') !== -1 && terminateUrl.slice(-5) === 'vsid=') {
+        terminateUrl = terminateUrl + encodeURIComponent(vsid);
+    }
+
     API.addGlobal({
         genderiat: {},
         baseURL: './images/',
         womenLabels: 'Women',
         menLabels: 'Men',
         disabledLabels: 'Physically Disabled People',
-        ableLabels: 'Physically Abled People'
+        ableLabels: 'Physically Abled People',
+        vsid: vsid
     });
 
     API.addTasksSet({
@@ -93,14 +117,14 @@ define([
             body: 'Please wait while we save your data...'
         }),
 
-        // Main completion redirect (injected from GitHub Secret or fallback)
+        // Main completion redirect (Verasight Complete vsref=1)
         redirect: [{
             type: 'redirect',
             name: 'redirecting',
-            url: '__COMPLETION_REDIRECT_URL__'
+            url: completeUrl
         }],
 
-        // Separate decline page and redirect to MSU PLS website for non-participants
+        // Separate decline page and redirect (Verasight Terminate vsref=2)
         decline_page: [{
             inherit: 'instructions',
             name: 'decline_page',
@@ -112,7 +136,7 @@ define([
         decline_redirect: [{
             type: 'redirect',
             name: 'decline_redirecting',
-            url: 'https://polisci.msu.edu/'
+            url: terminateUrl
         }]
     });
 
