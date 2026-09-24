@@ -13,8 +13,8 @@ define([
     var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     var deviceType = isMobile ? (isTouch ? 'mobile_touch' : 'mobile_other') : (isTouch ? 'desktop_touch' : 'desktop_mouse');
 
-    // DATAPIPE CONFIGURATION: Experiment ID replaced via GitHub Secret at deploy time or fallback
-    init_data_pipe(API, '__DATAPIPE_STUDY1_ID__', {
+    // DATAPIPE CONFIGURATION: Active Study 1 Experiment ID
+    init_data_pipe(API, '12MlCB7eHnjP', {
         file_type: 'csv',
         params: {
             vsid: vsid,
@@ -129,24 +129,27 @@ define([
         { type: 'isTouch' },
         { inherit: 'consent' },
         {
-            mixer: 'branch',
-            conditions: [
-                { compare: 'global.consent_choice', to: 2 }
-            ],
-            data: [
-                { inherit: 'decline_page' },
-                { inherit: 'decline_redirect' }
-            ],
-            else: [
-                { inherit: 'intro' },
-                { inherit: 'raceiat_instructions' },
-                { inherit: 'raceiat' },
-                { inherit: 'explicits' },
-                { inherit: 'debriefing' },
-                { inherit: 'uploading' },
-                { inherit: 'lastpage' },
-                { inherit: 'redirect' }
-            ]
+            mixer: 'function',
+            func: function() {
+                var choice = API.getGlobal().consent_choice;
+                if (choice == 2) {
+                    return [
+                        { inherit: 'decline_page' },
+                        { inherit: 'decline_redirect' }
+                    ];
+                } else {
+                    return [
+                        { inherit: 'intro' },
+                        { inherit: 'raceiat_instructions' },
+                        { inherit: 'raceiat' },
+                        { inherit: 'explicits' },
+                        { inherit: 'debriefing' },
+                        { inherit: 'uploading' },
+                        { inherit: 'lastpage' },
+                        { inherit: 'redirect' }
+                    ];
+                }
+            }
         }
     ]);
 

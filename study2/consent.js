@@ -78,12 +78,12 @@ define(['questAPI'], function(Quest){
     API.addSettings('hooks', {
         endTask: function() {
             try {
-                var current = API.getCurrent ? API.getCurrent() : {};
-                if (current && current.questions && current.questions.consent_choice) {
-                    API.getGlobal().consent_choice = current.questions.consent_choice.response;
+                var answers = API.getAnswers();
+                if (answers && answers.consent_choice) {
+                    API.getGlobal().consent_choice = answers.consent_choice;
                 }
             } catch (e) {
-                console.error("Consent endTask error:", e);
+                console.error('Consent endTask error:', e);
             }
         }
     });
