@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Implicit Association Test - Study 2</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/main.css"/>
 
     <style>
@@ -27,16 +24,30 @@
                  url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.ttf') format('truetype');
         }
     </style>
+
+    <script>
+        var scriptTag = document.createElement("script");
+        scriptTag.src = "https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/pi-minno.js";
+        scriptTag.onload = onLoad;
+        scriptTag.onreadystatechange = onLoad;
+        document.head.appendChild(scriptTag);
+
+        function onLoad() {
+            if (window.minnoInitialized) return;
+            window.minnoInitialized = true;
+
+            var container = document.createElement("div");
+            container.className = "container";
+
+            var canvas = document.createElement("div");
+            container.appendChild(canvas);
+
+            document.body.appendChild(container);
+
+            minnoJS(canvas, "mgr.js");
+        }
+    </script>
 </head>
 <body>
-    <div class="container">
-        <div id="minno-app"></div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/pi-minno.js"></script>
-    <script>
-        var canvas = document.getElementById("minno-app");
-        minnoJS(canvas, "mgr.js");
-    </script>
 </body>
 </html>

@@ -5,37 +5,32 @@ define([
 
     var API = new Manager();
 
-    // Extract Verasight URL Parameters (vsid / participant ID)
+    // Extract Verasight URL Parameters (vsid / participant ID and isid / key)
     var urlParams = new URLSearchParams(window.location.search);
     var vsid = urlParams.get('vsid') || urlParams.get('pid') || urlParams.get('id') || '';
+    var isid = urlParams.get('isid') || '__vskey__6aaac3bdc12cd10dfe2ab527';
 
     var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
     var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     var deviceType = isMobile ? (isTouch ? 'mobile_touch' : 'mobile_other') : (isTouch ? 'desktop_touch' : 'desktop_mouse');
 
-    // DATAPIPE CONFIGURATION: Defensive initialization
-    try {
-        if (typeof init_data_pipe === 'function') {
-            init_data_pipe(API, 'KQ2pq6uCiqYL', {
-                file_type: 'csv',
-                params: {
-                    vsid: vsid,
-                    device_touch: isTouch,
-                    device_mobile: isMobile,
-                    device_type: deviceType
-                }
-            });
+    init_data_pipe(API, 'KQ2pq6uCiqYL', {
+        file_type: 'csv',
+        params: {
+            vsid: vsid,
+            isid: isid,
+            device_touch: isTouch,
+            device_mobile: isMobile,
+            device_type: deviceType
         }
-    } catch (e) {
-        console.warn('DataPipe logger initialization warning:', e);
-    }
+    });
 
     API.setName('mgr');
     API.addSettings('skip', true);
 
     // Verasight Redirect URLs for Study 2 (Part 2)
-    var completeUrl = 'https://backend.verasight.io/surveys/redirect?isid=6aaac3bdc12cd10dfe2ab527&vsref=1&vsid=' + encodeURIComponent(vsid);
-    var terminateUrl = 'https://backend.verasight.io/surveys/redirect?isid=6aaac3bdc12cd10dfe2ab527&vsref=2&vsid=' + encodeURIComponent(vsid);
+    var completeUrl = 'https://backend.verasight.io/surveys/redirect?isid=' + encodeURIComponent(isid) + '&vsref=1&vsid=' + encodeURIComponent(vsid);
+    var terminateUrl = 'https://backend.verasight.io/surveys/redirect?isid=' + encodeURIComponent(isid) + '&vsref=2&vsid=' + encodeURIComponent(vsid);
 
     API.addGlobal({
         genderiat: {},
@@ -44,18 +39,9 @@ define([
         menLabels: 'Men',
         disabledLabels: 'Physically Disabled People',
         ableLabels: 'Physically Abled People',
-        vsid: vsid
+        vsid: vsid,
+        isid: isid
     });
-
-    var uploadingTaskConfig = (typeof uploading_task === 'function') ? uploading_task({
-        header: 'Just a moment',
-        body: 'Please wait while we save your data...'
-    }) : [{
-        type: 'message',
-        name: 'uploading',
-        template: "<div class='panel-body'><p class='lead'>Saving data...</p></div>",
-        buttonText: 'Continue'
-    }];
 
     API.addTasksSet({
         instructions: [{
@@ -113,16 +99,17 @@ define([
             header: 'You have completed the study'
         }],
 
-        uploading: uploadingTaskConfig,
+        uploading: uploading_task({
+            header: 'Just a moment',
+            body: 'Please wait while we save your data...'
+        }),
 
-        // Main completion redirect (Verasight Complete vsref=1)
         redirect: [{
             type: 'redirect',
             name: 'redirecting',
             url: completeUrl
         }],
 
-        // Separate decline page and redirect (Verasight Terminate vsref=2)
         decline_page: [{
             inherit: 'instructions',
             name: 'decline_page',
@@ -140,6 +127,37 @@ define([
 
     API.addSequence([
         { type: 'isTouch' },
+
+        {
+            mixer: 'branch',
+            conditions: { compare: 'global.$isTouch', to: true },
+            data: [
+                {
+                    type: 'injectStyle',
+                    css: [
+                        '[piq-page] {background-color: #fff; border: 1px solid transparent; border-radius: 4px; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05); margin-bottom: 20px; border-color: #bce8f1;}',
+                        '[piq-page] > ol {margin: 15px;}',
+                        '[piq-page] > .btn-group {margin: 0px 15px 15px 15px;}',
+                        '.container {padding:5px;}',
+                        '[pi-quest]::before, [pi-quest]::after {content: " ";display: table;}',
+                        '[pi-quest]::after {clear: both;}',
+                        '[pi-quest] h3 { border-bottom: 1px solid transparent; border-top-left-radius: 3px; border-top-right-radius: 3px; padding: 10px 15px; color: inherit; font-size: 2em; margin-bottom: 20px; margin-top: 0;background-color: #d9edf7;border-color: #bce8f1;color: #31708f;}',
+                        '[pi-quest] .form-group > label {font-size:1.2em; font-weight:normal;}',
+                        '[pi-quest] .btn-toolbar {margin:15px;float:none !important; text-align:center;position:relative;}',
+                        '[pi-quest] [ng-click="decline($event)"] {position:absolute;right:0;bottom:0}',
+                        '[pi-quest] [ng-click="submit()"] {width:30%;line-height: 1.3333333;border-radius: 6px;}',
+                        '@media (min-width: 480px) {',
+                        ' [pi-quest] [ng-click="submit()"] {width:30%;padding: 10px 16px;font-size: 1.6em;}',
+                        '}',
+                        '@media (max-width: 480px) {',
+                        ' [pi-quest] [ng-click="submit()"] {padding: 8px 13px;font-size: 1.2em;}',
+                        ' [pi-quest] [ng-click="decline($event)"] {font-size: 0.9em;padding:3px 6px;}',
+                        '}'
+                    ]
+                }
+            ]
+        },
+
         { inherit: 'consent' },
         {
             mixer: 'function',
