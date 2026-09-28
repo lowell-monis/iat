@@ -13,16 +13,22 @@ define([
     var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     var deviceType = isMobile ? (isTouch ? 'mobile_touch' : 'mobile_other') : (isTouch ? 'desktop_touch' : 'desktop_mouse');
 
-    // DATAPIPE CONFIGURATION: Active Study 1 Experiment ID
-    init_data_pipe(API, '12MlCB7eHnjP', {
-        file_type: 'csv',
-        params: {
-            vsid: vsid,
-            device_touch: isTouch,
-            device_mobile: isMobile,
-            device_type: deviceType
+    // DATAPIPE CONFIGURATION: Defensive initialization
+    try {
+        if (typeof init_data_pipe === 'function') {
+            init_data_pipe(API, '12MlCB7eHnjP', {
+                file_type: 'csv',
+                params: {
+                    vsid: vsid,
+                    device_touch: isTouch,
+                    device_mobile: isMobile,
+                    device_type: deviceType
+                }
+            });
         }
-    });
+    } catch (e) {
+        console.warn('DataPipe logger initialization warning:', e);
+    }
 
     API.setName('mgr');
     API.addSettings('skip', true);
@@ -40,6 +46,16 @@ define([
         ableLabels: 'Physically Abled People',
         vsid: vsid
     });
+
+    var uploadingTaskConfig = (typeof uploading_task === 'function') ? uploading_task({
+        header: 'Just a moment',
+        body: 'Please wait while we save your data...'
+    }) : [{
+        type: 'message',
+        name: 'uploading',
+        template: "<div class='panel-body'><p class='lead'>Saving data...</p></div>",
+        buttonText: 'Continue'
+    }];
 
     API.addTasksSet({
         instructions: [{
@@ -97,10 +113,7 @@ define([
             header: 'You have completed the study'
         }],
 
-        uploading: uploading_task({
-            header: 'Just a moment',
-            body: 'Please wait while we save your data...'
-        }),
+        uploading: uploadingTaskConfig,
 
         // Main completion redirect (Verasight Complete vsref=1)
         redirect: [{
