@@ -79,8 +79,10 @@ define(['questAPI'], function(Quest){
         endTask: function() {
             try {
                 var answers = API.getAnswers();
-                if (answers && answers.consent_choice) {
-                    API.getGlobal().consent_choice = answers.consent_choice;
+                if (answers && answers.consent_choice !== undefined) {
+                    var val = answers.consent_choice;
+                    if (Array.isArray(val)) val = val[0];
+                    API.getGlobal().consent_choice = parseInt(val, 10);
                 }
             } catch (e) {
                 console.error('Consent endTask error:', e);
