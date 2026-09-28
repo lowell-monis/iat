@@ -1,53 +1,55 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/main.css"/>
+    <head>
+        <title>Implicit Association Test - Study 1</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/main.css"/>
 
-    <style>
-        .container {
-            padding-top: 15px;
+        <style>
+            .container {
+                padding-top: 15px;
+            }
+
+            img {
+                -webkit-user-drag: none;
+                user-drag: none;
+                pointer-events: none;
+            }
+
+            /* Bootstrap Glyphicon font fallback */
+            @font-face {
+                font-family: 'Glyphicons Halflings';
+                src: url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.eot');
+                src: url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+                     url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.woff2') format('woff2'),
+                     url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.woff') format('woff'),
+                     url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.ttf') format('truetype');
         }
+        </style>
 
-        img {
-            -webkit-user-drag: none;
-            user-drag: none;
-            pointer-events: none;
-        }
+        <script>
+            var scriptTag                = document.createElement('script');
+            scriptTag.src                = 'https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.*/dist/pi-minno.js';
+            scriptTag.onload             = onLoad;
+            scriptTag.onreadystatechange = onLoad;
+            document.head.appendChild(scriptTag);
+        
+            function onLoad() {
+                if (window.minnoStarted) return;
+                window.minnoStarted = true;
 
-        /* Bootstrap Glyphicon font fallback */
-        @font-face {
-            font-family: 'Glyphicons Halflings';
-            src: url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.eot');
-            src: url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
-                 url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.woff2') format('woff2'),
-                 url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.woff') format('woff'),
-                 url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/fonts/glyphicons-halflings-regular.ttf') format('truetype');
-        }
-    </style>
+                var container = document.createElement('div');
+                container.className = 'container';
 
-    <script>
-        var scriptTag = document.createElement("script");
-        scriptTag.src = "https://cdn.jsdelivr.net/gh/minnojs/minno-quest@0.3/dist/pi-minno.js";
-        scriptTag.onload = onLoad;
-        scriptTag.onreadystatechange = onLoad;
-        document.head.appendChild(scriptTag);
-
-        function onLoad() {
-            if (window.minnoInitialized) return;
-            window.minnoInitialized = true;
-
-            var container = document.createElement("div");
-            container.className = "container";
-
-            var canvas = document.createElement("div");
-            container.appendChild(canvas);
-
-            document.body.appendChild(container);
-
-            minnoJS(canvas, "mgr.js");
-        }
-    </script>
-</head>
-<body>
-</body>
+                var canvas = document.createElement('div');
+                container.appendChild(canvas);
+                document.body.appendChild(container);
+                
+                minnoJS(canvas, 'mgr.js');
+            }
+        </script>
+    </head>
+    <body>
+    </body>
 </html>
