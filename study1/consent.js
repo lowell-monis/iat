@@ -78,15 +78,30 @@ define(['questAPI'], function(Quest){
     API.addSettings('hooks', {
         endTask: function() {
             try {
-                var answers = API.getAnswers();
-                if (answers && answers.consent_choice !== undefined) {
-                    var val = answers.consent_choice;
+                var current = API.getCurrent();
+                var q = current && current.questions && current.questions.consent_choice;
+                if (q && q.response !== undefined) {
+                    var val = q.response;
                     if (Array.isArray(val)) val = val[0];
                     API.getGlobal().consent_choice = parseInt(val, 10);
                 }
             } catch (e) {
                 console.error('Consent endTask error:', e);
             }
+        }
+    });
+
+    API.addSettings('onEnd', function() {
+        try {
+            var current = API.getCurrent();
+            var q = current && current.questions && current.questions.consent_choice;
+            if (q && q.response !== undefined) {
+                var val = q.response;
+                if (Array.isArray(val)) val = val[0];
+                API.getGlobal().consent_choice = parseInt(val, 10);
+            }
+        } catch (e) {
+            console.error('Consent onEnd error:', e);
         }
     });
 

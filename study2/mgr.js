@@ -131,7 +131,14 @@ define([
         {
             mixer: 'branch',
             conditions: [
-                { compare: 'global.consent_choice', to: 2 }
+                {
+                    or: [
+                        { compare: 'global.consent_choice', to: 2 },
+                        { compare: 'global.current.questions.consent_choice.response', to: 2 },
+                        { compare: 'global.consent_choice', to: '2' },
+                        { compare: 'global.current.questions.consent_choice.response', to: '2' }
+                    ]
+                }
             ],
             data: [
                 { inherit: 'decline_page' },
